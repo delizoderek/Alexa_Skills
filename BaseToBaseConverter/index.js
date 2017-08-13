@@ -13,12 +13,28 @@ var handles = {
     'AMAZON.NoIntent': function() {
         this.emit(':tell', 'Ok, start converting numbers','Are you still there, its time to convert numbers!');
     },
-	'AMAZON.HelpIntent': function () {},
-	'AMAZON.RepeatIntent': function () {},
-	'AMAZON.StopIntent': function () {},
-	'AMAZON.CancelIntent': function () {},
-	'SessionEndedRequest':function () {},
-	'Unhandled': function () {},
+	'AMAZON.HelpIntent': function () {
+		this.attributes['speechOutput'] = this.t("HELP_MESSAGE");
+        this.attributes['repromptSpeech'] = this.t("HELP_REPROMPT");
+        this.emit(':ask', this.attributes['speechOutput'], this.attributes['repromptSpeech']);
+	},
+	'AMAZON.RepeatIntent': function () {
+		this.emit(':ask', this.attributes['speechOutput'], this.attributes['repromptSpeech']);
+	},
+	'AMAZON.StopIntent': function () {
+		this.emit('SessionEndedRequest');
+	},
+	'AMAZON.CancelIntent': function () {
+		this.emit('SessionEndedRequest');
+	},
+	'SessionEndedRequest':function () {
+		this.emit(':tell', this.t("STOP_MESSAGE"));
+	},
+	'Unhandled': function () {
+		this.attributes['speechOutput'] = this.t("HELP_MESSAGE");
+        this.attributes['repromptSpeech'] = this.t("HELP_REPROMPT");
+        this.emit(':ask', this.attributes['speechOutput'], this.attributes['repromptSpeech']);
+	},
 	'ConversionIntent' : function(){
 		this.emit(':tell', 'Hello World!');
 	}
